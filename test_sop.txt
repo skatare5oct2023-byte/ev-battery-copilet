@@ -1,0 +1,5 @@
+SECTION 9: PACK ENCLOSURE SEALING AND LEAK TESTING
+Prior to final pack bolting, inspect the perimeter silicone gasket for tears or twists.
+Apply structural adhesive along Channel B at a continuous bead width of 4.0 mm (+/- 0.5 mm).
+Perform helium mass spectrometry leak detection. The maximum allowable helium leak rate is 1.0 x 10^-6 mbar*L/sec.
+Fault Code E-901: Helium leak rate threshold exceeded. Action: Depressurize pack, strip adhesive line, re-clean channel with isopropanol, and re-apply gasket.
