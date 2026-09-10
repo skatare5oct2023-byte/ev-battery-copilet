@@ -9,4 +9,6 @@ langchain-core
 langchain-text-splitters
 pandas
 sentence-transformers
+scikit-learn
+joblib
 click>=8.4.2
