@@ -1,6 +1,7 @@
 ﻿import os
 import io
 import pandas as pd
+import numpy as np
 from datetime import datetime
 import streamlit as st
 from dotenv import load_dotenv
@@ -25,7 +26,7 @@ DB_DIR = os.path.abspath("vectorstore")
 st.set_page_config(page_title="EV Battery Factory Copilot", page_icon="⚡", layout="wide")
 
 st.title("⚡ EV Battery Factory Operations Copilot")
-st.caption("AI-Powered Assistant & Predictive Diagnostics for Battery Assembly Lines")
+st.caption("AI-Powered Assistant, Predictive Diagnostics & Analytics for Battery Assembly Lines")
 
 @st.cache_resource
 def get_embeddings():
@@ -135,7 +136,11 @@ if uploaded_file is not None:
         st.rerun()
 
 # Layout Tabs
-tab_copilot, tab_ml = st.tabs(["AI Operations Copilot (RAG)", "Machine Health Diagnostics (ML)"])
+tab_copilot, tab_ml, tab_analytics = st.tabs([
+    "AI Operations Copilot (RAG)", 
+    "Machine Health Diagnostics (ML)",
+    "Production Analytics (KPIs & Trends)"
+])
 
 # TAB 1: RAG COPILOT
 with tab_copilot:
@@ -234,3 +239,45 @@ with tab_ml:
                 st.error(f"Status: {labels[2]}")
                 st.caption(f"Normal: {probs[0]*100:.1f}% | Warning: {probs[1]*100:.1f}% | Critical: {probs[2]*100:.1f}%")
                 st.error("Intervention Required: Temperature or vibration exceeds safe operating thresholds.")
+
+# TAB 3: PRODUCTION ANALYTICS
+with tab_analytics:
+    st.subheader("Shift Telemetry & Line Performance KPIs")
+    st.caption("Real-time monitoring across dry rooms, formation lines, and weld stations.")
+
+    kpi1, kpi2, kpi3, kpi4 = st.columns(4)
+    kpi1.metric("Daily Cell Output", "1,248 Units", "+5.4%")
+    kpi2.metric("Line Yield Efficiency", "98.2%", "+0.6%")
+    kpi3.metric("Dry Room Dew Point", "-42.5 deg C", "-1.2 deg C")
+    kpi4.metric("Active Anomaly Alerts", "2 Triggers", "-1", delta_color="inverse")
+
+    st.divider()
+
+    chart_col1, chart_col2 = st.columns(2)
+
+    np.random.seed(42)
+    time_series = pd.date_range(end=datetime.now(), periods=24, freq='h')
+    
+    with chart_col1:
+        st.markdown("**Ultrasonic Welder Thermal Profile (Last 24 Hours)**")
+        temp_data = pd.DataFrame({
+            "Time": time_series,
+            "Station 1 Temp (deg C)": np.random.normal(loc=28.0, scale=1.8, size=24),
+            "Station 2 Temp (deg C)": np.random.normal(loc=31.5, scale=2.2, size=24),
+            "Threshold Limit": [38.0] * 24
+        }).set_index("Time")
+        st.line_chart(temp_data)
+
+    with chart_col2:
+        st.markdown("**Fault Code Distribution (Current Shift)**")
+        fault_data = pd.DataFrame({
+            "Fault Category": [
+                "E-101 Humidity",
+                "E-204 Misalignment",
+                "E-305 Casing Bulge",
+                "E-901 Helium Leak",
+                "Electrolyte Drip"
+            ],
+            "Occurrences": [8, 3, 2, 1, 4]
+        }).set_index("Fault Category")
+        st.bar_chart(fault_data)
