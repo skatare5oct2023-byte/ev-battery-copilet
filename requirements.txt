@@ -1,0 +1,12 @@
+streamlit
+python-dotenv
+chromadb
+gTTS
+langchain-huggingface
+langchain-community
+langchain-groq
+langchain-core
+langchain-text-splitters
+pandas
+sentence-transformers
+click>=8.4.2
