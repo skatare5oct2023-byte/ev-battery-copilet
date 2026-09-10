@@ -1,4 +1,4 @@
-﻿import os
+import os
 import io
 import pandas as pd
 from datetime import datetime
@@ -15,11 +15,16 @@ from langchain_text_splitters import RecursiveCharacterTextSplitter
 
 load_dotenv()
 
+# Grab API Key from environment or Streamlit Secrets
+api_key = os.getenv("GROQ_API_KEY")
+if not api_key and "GROQ_API_KEY" in st.secrets:
+    api_key = st.secrets["GROQ_API_KEY"]
+
 DB_DIR = os.path.abspath("vectorstore")
 
 st.set_page_config(page_title="EV Battery Factory Copilot", page_icon="?", layout="wide")
 
-st.title("⚡ EV Battery Factory Operations Copilot")
+st.title("? EV Battery Factory Operations Copilot")
 st.caption("Standard Operating Procedure (SOP) Assistance for Assembly Line Operations")
 
 @st.cache_resource
@@ -35,8 +40,9 @@ def get_vector_store():
     )
 
 @st.cache_resource
-def get_chain():
+def get_chain(key):
     llm = ChatGroq(
+        groq_api_key=key,
         model="openai/gpt-oss-20b",
         temperature=0.0,
         max_tokens=300
@@ -52,7 +58,11 @@ def get_chain():
 
     return prompt | llm | StrOutputParser()
 
-chain = get_chain()
+if not api_key:
+    st.error("GROQ_API_KEY is not configured. Please add it to your environment or Streamlit Secrets.")
+    st.stop()
+
+chain = get_chain(api_key)
 
 if "messages" not in st.session_state:
     st.session_state.messages = []
